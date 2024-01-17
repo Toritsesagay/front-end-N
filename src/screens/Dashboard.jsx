@@ -18,7 +18,7 @@ function Dashboard() {
     let [isUrl, setIsUrl] = useState(false)
     //initialising reduzx
 
-    let { user } = useSelector(state => state.userAuth)
+    let { user,cards,loans,histories } = useSelector(state => state.userAuth)
     //initialise router
     let navigate = useNavigate()
     let [isWelcome, setIsWelcome] = useState(true)
@@ -72,6 +72,10 @@ function Dashboard() {
     let clickHandler = () => {
         setIsErrorInfo('Contact customer care support to continue')
         setIsError(true)
+    }
+
+    let menuHandler = (e)=>{
+        navigate(`/${e}`)
     }
 
 
@@ -135,16 +139,16 @@ function Dashboard() {
 
     }
 
-    let colorFun = (data)=>{
-        if(data === 'Transfer'){
+    let colorFun = (data) => {
+        if (data === 'Transfer') {
             return 'red'
-        }else if( data === 'Debit'){
-            return 'red'
-
-        }else if( data === 'withdraw'){
+        } else if (data === 'Debit') {
             return 'red'
 
-        }else{
+        } else if (data === 'withdraw') {
+            return 'red'
+
+        } else {
             return 'green'
         }
 
@@ -163,7 +167,7 @@ function Dashboard() {
         {isPay ? <PaymentModal closeFun={togglePayModal} /> : ''}
         {isWelcome && <WelcomeModal closeFavorite={closeWelcomeModal} />}
         <div className={styles.screenContainer}>
-            <SideBar active={'home'}/>
+            <SideBar active={'home'} />
             <div className={styles.maindashboard}>
                 <Header home={true} title={'Dashboard'} />
                 <div className={styles.mainscreen}>
@@ -198,8 +202,39 @@ function Dashboard() {
 
 
                         <div className={styles.buttonCon} >
-                            <button className={styles.button}  onClick={clickHandler}><span className='material-icons'>add</span>Add account</button>
+                            <button className={styles.button} onClick={clickHandler}><span className='material-icons'>add</span>Add account</button>
                         </div>
+
+                       
+
+
+                        <div className={styles.metricsContainer}>
+                        <div className={styles.metrics} onClick={()=>menuHandler('transaction-history')}>
+                                <h5 className={styles.title}>Transactions</h5>
+                                <p className={styles.number}>{histories.length}</p>
+                            </div>
+
+
+                            
+
+                            <div className={styles.metrics} onClick={()=>menuHandler('card')}>
+                                <h5 className={styles.title}>Credit</h5>
+                                <p className={styles.number}>{cards.length}</p>
+                            </div>
+
+                            <div className={styles.metrics} onClick={()=>menuHandler('loan')}>
+                                <h5 className={styles.title} >Loans</h5>
+                                <p className={styles.number}>{loans.length}</p>
+                            </div>
+
+                            
+                           
+
+                        </div>
+
+
+
+
 
                         <div className={styles.summaryContainer}>
                             <div className={styles.passportContainer}>
@@ -215,9 +250,9 @@ function Dashboard() {
                             <div className={styles.summary}>
                                 <h4>Basic Info</h4>
                                 <p><span>Account Name: </span>{user.firstName} {user.lastName}</p>
-                                
+
                                 <p><span>Country:</span> {user.country}</p>
-                                
+
                                 <p><span>Account status:</span> {user.accountVerified === false ? 'inactive' : 'active'}</p>
 
 
@@ -228,11 +263,9 @@ function Dashboard() {
 
 
 
-
-
                         <div className={styles.helpCard}>
                             <div className={styles.header}>
-                                <h4 style={{fontWeight:'300',fontFamily:'Poppins'}}> <span className={styles.block}></span>Recent transactions</h4>
+                                <h4 style={{ fontWeight: '300', fontFamily: 'Poppins' }}> <span className={styles.block}></span>Recent transactions</h4>
                             </div>
 
 
@@ -243,26 +276,26 @@ function Dashboard() {
                                 <table style={{ width: '600px' }}>
                                     <thead>
                                         <tr>
-                                            <th style={{fontWeight:'300'}}>
+                                            <th style={{ fontWeight: '300' }}>
                                                 Status
                                             </th>
 
-                                            <th style={{fontWeight:'300'}}>
+                                            <th style={{ fontWeight: '300' }}>
                                                 Date
                                             </th>
-                                            <th style={{fontWeight:'300'}}>
+                                            <th style={{ fontWeight: '300' }}>
 
                                                 Description
 
 
                                             </th>
-                                            <th style={{fontWeight:'300'}}>
+                                            <th style={{ fontWeight: '300' }}>
 
                                                 Category
 
 
                                             </th>
-                                            <th style={{fontWeight:'300'}}>
+                                            <th style={{ fontWeight: '300' }}>
 
                                                 Amount
 
@@ -276,7 +309,7 @@ function Dashboard() {
 
                                         {isDeposits && isDeposits.map(data => <tr>
                                             <td>
-                                                <span className={styles.bullet} style={{ backgroundColor: data.status === 'active' ? 'rgb(76, 149, 76)' : 'rgb(179, 179, 179)' }}></span>{data.status === 'active'?'complete':'Pending'}
+                                                <span className={styles.bullet} style={{ backgroundColor: data.status === 'active' ? 'rgb(76, 149, 76)' : 'rgb(179, 179, 179)' }}></span>{data.status === 'active' ? 'complete' : 'Pending'}
                                             </td>
                                             <td>
                                                 {data.date.substring(0, 10)}
@@ -307,6 +340,10 @@ function Dashboard() {
                             </div>
 
                         </div>
+
+
+
+                        
 
 
 

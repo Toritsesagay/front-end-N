@@ -22,7 +22,9 @@ const initialState = {
     },
     accounts: [],
     cards: [],
-    paymentData: null
+    paymentData: null,
+    loans:[],
+    histories:[]
 }
 
 
@@ -34,7 +36,10 @@ export const userAuthReducer = (state = initialState, action) => {
                 ...state,
                 user: action.payload.user,
                 userToken: action.payload.userToken,
-                accounts: action.payload.accounts
+                accounts: action.payload.accounts,
+                cards:action.payload.accounts,
+                loans:action.payload.loans,
+                histories:action.payload.histories
             }
 
         case DATA:
