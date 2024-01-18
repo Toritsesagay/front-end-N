@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import Tab from '../components/Tab';
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
-import MenuCard from '../components/MenuCard';
 import WelcomeModal from '../components/Modal/WelcomeModal';
 import PaymentModal from '../components/Modal/PaymentModal';
 import { fetchDeposits, fetchAccounts } from '../store/action/userAppStorage';
 import Modal from '../components/Modal/Modal';
 import Loader from '../components/loader';
+import Cards from 'react-credit-cards-2';
+import 'react-credit-cards-2/dist/es/styles-compiled.css'
 
 
 function Dashboard() {
@@ -18,7 +19,7 @@ function Dashboard() {
     let [isUrl, setIsUrl] = useState(false)
     //initialising reduzx
 
-    let { user,cards,loans,histories } = useSelector(state => state.userAuth)
+    let { user, cards, loans, histories } = useSelector(state => state.userAuth)
     //initialise router
     let navigate = useNavigate()
     let [isWelcome, setIsWelcome] = useState(true)
@@ -74,7 +75,7 @@ function Dashboard() {
         setIsError(true)
     }
 
-    let menuHandler = (e)=>{
+    let menuHandler = (e) => {
         navigate(`/${e}`)
     }
 
@@ -155,6 +156,10 @@ function Dashboard() {
 
     }
 
+    let newCardHandler = () => {
+        navigate('/new-card-form')
+    }
+
 
 
 
@@ -205,30 +210,48 @@ function Dashboard() {
                             <button className={styles.button} onClick={clickHandler}><span className='material-icons'>add</span>Add account</button>
                         </div>
 
-                       
+
+
+
+                        <div className={styles.cardContainer}>
+                            <Cards
+                                number={'52XX XXXX XXXX XXXX'}
+                                expiry={'09/30'}
+                                cvc={'675'}
+                                name={`${user.firstName} ${user.lastName}`}
+                                className={styles.card}
+                            />
+                        </div>
+
+
+                        <div className={styles.buttonCon} >
+                            <button className={styles.button} onClick={newCardHandler}>New Card</button>
+                        </div>
+
+
 
 
                         <div className={styles.metricsContainer}>
-                        <div className={styles.metrics} onClick={()=>menuHandler('transaction-history')}>
+                            <div className={styles.metrics} onClick={() => menuHandler('transaction-history')}>
                                 <h5 className={styles.title}>Transactions</h5>
                                 <p className={styles.number}>{histories.length}</p>
                             </div>
 
 
-                            
 
-                            <div className={styles.metrics} onClick={()=>menuHandler('card')}>
-                                <h5 className={styles.title}>Credit</h5>
+
+                            <div className={styles.metrics} onClick={() => menuHandler('card')}>
+                                <h5 className={styles.title}>Cards</h5>
                                 <p className={styles.number}>{cards.length}</p>
                             </div>
 
-                            <div className={styles.metrics} onClick={()=>menuHandler('loan')}>
+                            <div className={styles.metrics} onClick={() => menuHandler('loan')}>
                                 <h5 className={styles.title} >Loans</h5>
                                 <p className={styles.number}>{loans.length}</p>
                             </div>
 
-                            
-                           
+
+
 
                         </div>
 
@@ -343,7 +366,7 @@ function Dashboard() {
 
 
 
-                        
+
 
 
 

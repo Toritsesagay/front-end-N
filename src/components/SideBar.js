@@ -45,7 +45,7 @@ function SideBar({active}) {
                 <span className='material-icons'>
                     savings
                 </span>
-                <p>Withdraw</p>
+                <p>Bill Pay</p>
             </div>
 
 

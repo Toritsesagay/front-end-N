@@ -74,7 +74,7 @@ function Header({ home, title }) {
 
             </li>
             <li className={styles.item} onClick={() => navigateHandler('withdraw')}>
-                Withdraw
+                Bill Pay
 
             </li>
             <li className={styles.item} onClick={() => navigateHandler('transfer')}>

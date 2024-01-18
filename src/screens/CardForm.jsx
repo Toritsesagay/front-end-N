@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 function CardForm() {
     let [isInfo, setIsInfo] = useState(false)
     let [cardType, setCardType] = useState('Debit Card')
+    let [isCardNetwork, setIsCardNetwork] = useState('Visa Card')
     let [isLoading, setIsLoading] = useState(true)
     let [card, setIsCard] = useState(false)
     let [isError, setIsError] = useState(false)
@@ -59,7 +60,8 @@ function CardForm() {
 
         let response = await dispatch(createCard({
             nameOnCard,
-            cardType
+            cardType,
+            cardNetwork:isCardNetwork
         }))
 
         if (!response.bool) {
@@ -70,7 +72,7 @@ function CardForm() {
         }
         setIsLoading(false)
 
-        let allCards = response.message.filter(data=>data.isVerified == true)
+        let allCards = response.message.filter(data => data.isVerified == true)
         setIsCard(response.message[count])
         setCardList(allCards)
         setLengthOfCount(allCards.length)
@@ -87,6 +89,10 @@ function CardForm() {
 
     let setFormDetails = (data) => {
         setCardType(data.value)
+    }
+
+    let setCardNetwork = (data) => {
+        setIsCardNetwork(data.value)
     }
 
 
@@ -113,7 +119,7 @@ function CardForm() {
         }
         setIsLoading(false)
         ///////////////////
-        let allCards = response.message.filter(data=>data.isVerified == true)
+        let allCards = response.message.filter(data => data.isVerified == true)
         setIsCard(response.message[count])
         setCardList(allCards)
         setLengthOfCount(allCards.length)
@@ -122,16 +128,16 @@ function CardForm() {
 
     let decreaseCountHandler = () => {
         let currentCount = count
-        if(currentCount === 0){
-            return setCount(lengthOfcount-1)
+        if (currentCount === 0) {
+            return setCount(lengthOfcount - 1)
         }
         setCount(currentCount - 1)
-       
+
     }
 
     let increaseCountHandler = () => {
         let currentCount = count
-        if(currentCount === lengthOfcount - 1){
+        if (currentCount === lengthOfcount - 1) {
             return setCount(0)
         }
         setCount(currentCount + 1)
@@ -145,7 +151,7 @@ function CardForm() {
         <div className={styles.screenContainer}>
             <SideBar active='Card' />
             <div className={styles.maindashboard} style={{ height: '100vh' }} >
-                <Header home={false} title={'Manage Card'} />
+                <Header home={false} title={'Card'} />
                 <div className={styles.mainscreen}>
 
                     {!card ? <div className={styles.mainscreenright}>
@@ -176,6 +182,13 @@ function CardForm() {
                                 <Select setFormDetails={setFormDetails} formName="cardType" >
                                     <option>Debit Card</option>
                                     <option>Credit Card</option>
+                                </Select>
+
+                                <p>Card network</p>
+
+                                <Select setFormDetails={setCardNetwork} formName="cardNetwork" >
+                                    <option>Visa Card</option>
+                                    <option>Master Card</option>
                                 </Select>
 
                                 <p>Name of Card</p>
@@ -236,10 +249,10 @@ function CardForm() {
                             </div>
                         </form>
 
-                        {cardlist.length > 1 &&<div className={styles.paginateContainer}>
-                        {count > 0 &&<p className={styles.paginate} onClick={decreaseCountHandler}>Prev</p>}
+                        {cardlist.length > 1 && <div className={styles.paginateContainer}>
+                            {count > 0 && <p className={styles.paginate} onClick={decreaseCountHandler}>Prev</p>}
 
-                            {count !== lengthOfcount-1 && <p className={styles.paginate} onClick={increaseCountHandler}>Next</p>}
+                            {count !== lengthOfcount - 1 && <p className={styles.paginate} onClick={increaseCountHandler}>Next</p>}
                         </div>}
 
                     </div>}

@@ -50,9 +50,6 @@ function CardDetails() {
     }
 
 
-
-
-
     let changeHandler = () => {
         setIsInfo(prev => !prev)
     }

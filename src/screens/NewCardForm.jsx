@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 function CardForm() {
     let [isInfo, setIsInfo] = useState(false)
     let [cardType, setCardType] = useState('Debit Card')
+    let [isCardNetwork, setIsCardNetwork] = useState('Visa Card')
     let [isLoading, setIsLoading] = useState(false)
     let [card, setIsCard] = useState(false)
     let [isError, setIsError] = useState(false)
@@ -64,7 +65,8 @@ function CardForm() {
 
         let response = await dispatch(createCard({
             nameOnCard,
-            cardType
+            cardType,
+            cardNetwork:isCardNetwork
         }))
 
         if (!response.bool) {
@@ -80,6 +82,11 @@ function CardForm() {
 
     let setFormDetails = (data) => {
         setCardType(data.value)
+    }
+
+    let setCardNetwork = (data) => {
+      
+        setIsCardNetwork(data.value)
     }
 
 
@@ -132,9 +139,20 @@ function CardForm() {
                                     <option>Credit Card</option>
                                 </Select>
 
+
+                                <p>Card network</p>
+
+                                <Select setFormDetails={setCardNetwork} formName="cardNetwork" >
+                                    <option>Visa Card</option>
+                                    <option>Master Card</option>
+                                </Select>
+
                                 <p>Name of Card</p>
 
                                 <input placeholder='' onChange={(e) => onChangeHandler('nameOnCard', e.target.value)} value={nameOnCard} required />
+
+
+
 
                                 <button> Create Card</button>
 

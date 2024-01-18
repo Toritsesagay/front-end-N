@@ -7,7 +7,7 @@ import SideBar from '../components/SideBar';
 import FavoriteModal from '../components/Modal/FavouriteCard';
 import ConfirmTransferModal from '../components/Modal/ConfirmTransfer';
 import SuccessModal from '../components/Modal/SuccessModal';
-import { fetchTransfersAccount, sendAccount, sendAccountWithinBank } from '../store/action/userAppStorage';
+import { fetchAllAccount, sendAccount, sendAccountWithinBank } from '../store/action/userAppStorage';
 import Loader from '../components/Modal/LoadingModal';
 import Modal from '../components/Modal/Modal';
 import OtpModal from '../components/Modal/OtpModal';
@@ -26,7 +26,7 @@ function SendToAccont() {
     let [nameOfCountry, setNameOfCountry] = useState('')
     let [isSuccessModal, setIsSuccessModal] = useState(false)
     let [addToFavorite, setIsAddToFavorite] = useState(false)
-    let [isTransfer, setIsTransfer] = useState([])
+    let [isAccount, setIsAccount] = useState([])
     let [isError, setIsError] = useState(false)
     let [isErrorInfo, setIsErrorInfo] = useState('')
     let [isUrl, setIsUrl] = useState('')
@@ -37,7 +37,7 @@ function SendToAccont() {
 
     let [isMyBank, setIsMyBank] = useState(false)
 
-
+    let [currentAccount, setCurrentAccount] = useState(false)
     let [sourceAccountNumber, setSourceAccountNumber] = useState('')
     let [sourceAccount, setSourceAccount] = useState('')
     ///states for generating images
@@ -56,7 +56,7 @@ function SendToAccont() {
 
 
     let fetchTransfers = async () => {
-        let res = await dispatch(fetchTransfersAccount())
+        let res = await dispatch(fetchAllAccount())
         if (!res.bool) {
             setIsError(true)
             setIsErrorInfo(res.message)
@@ -65,9 +65,7 @@ function SendToAccont() {
         }
         setIsLoading(false)
         //filtering trnsfer
-        let allTransfers = res.message
-        let filteredTransfer = allTransfers.filter(data => data.medium === 'Account Number')
-        setIsTransfer(filteredTransfer)
+        setIsAccount(res.message)
         setIsLoading(false)
 
     }
@@ -83,9 +81,29 @@ function SendToAccont() {
             setRouteNumber(val)
 
         } else if (name === 'accountNumber') {
+     
             setAccountNumber(val)
-        }
+            if (isMyBank) {
+                const newData = isAccount.filter((item) => {
+                    const itemData = item.accountNumber ? item.accountNumber : '';
+                    const textData = val;
+                    return itemData.indexOf(textData) > -1;
+                })
 
+                if (!newData) {
+                    setCurrentAccount()
+                    setAccountName(``)
+                    setRouteNumber()
+                    return
+                }
+                let foundAccount = newData[0]
+                setCurrentAccount(foundAccount?.accountNumber)
+                setAccountName(`${foundAccount?.user?.firstName} ${foundAccount?.user?.lastName}`)
+                setRouteNumber(foundAccount?.user?.swiftNumber)
+                setNameOfCountry(foundAccount?.user?.country)
+            }
+
+        }
         else if (name === 'amount') {
             setAmount(val)
 
@@ -153,7 +171,7 @@ function SendToAccont() {
             setIsUrl(res.url)
             return
         }
-        setIsTransfer(prev => [...prev, res.message])
+        setIsAccount(prev => [...prev, res.message])
         setAmount('')
         setIsLoading(false)
         setIsUrl(res.url)
@@ -320,7 +338,7 @@ function SendToAccont() {
                             <button onClick={otherBankHandler} style={{ backgroundColor: isMyBank ? ' rgb(241, 255, 241)' : 'rgb(109, 156, 109)', color: isMyBank ? 'rgb(109, 156, 109)' : '#fff' }}>
                                 Other Bank
                             </button>
-                            
+
                         </div>
 
 
@@ -355,18 +373,25 @@ function SendToAccont() {
 
                                 <h6 > Transfer information </h6>
 
-                                <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
-
-                                {!isMyBank && <input placeholder='Enter Name Of Country' onChange={(e) => onChangeHandler('nameOfCountry', e.target.value)} value={nameOfCountry} required />}
-
-
-                                {!isMyBank &&<input placeholder='Enter Name Of Bank' onChange={(e) => onChangeHandler('nameOfBank', e.target.value)} value={nameOfBank} required />}
-
-                                <input placeholder='Account Holder Name' onChange={(e) => onChangeHandler('nameOfAccount', e.target.value)} value={accountName} required />
-
                                 <input placeholder='Account Number' onChange={(e) => onChangeHandler('accountNumber', e.target.value)} value={accountNumber} required />
 
-                                {!isMyBank &&<input placeholder='Route/Swift Number' onChange={(e) => onChangeHandler('routeNumber', e.target.value)} value={routeNumber} required />}
+
+                                {!isMyBank && <input placeholder='Enter Name Of Bank' onChange={(e) => onChangeHandler('nameOfBank', e.target.value)} value={nameOfBank} required />}
+
+                                {<input placeholder='Account Holder Name' onChange={(e) => onChangeHandler('nameOfAccount', e.target.value)} value={accountName} required />}
+
+                                <input placeholder='Enter Name Of Country' onChange={(e) => onChangeHandler('nameOfCountry', e.target.value)} value={nameOfCountry} required />
+
+
+
+
+                                <input placeholder='Route/Swift Number' onChange={(e) => onChangeHandler('routeNumber', e.target.value)} value={routeNumber} required />
+
+                                <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
+
+                               
+
+
 
                                 <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />
 
