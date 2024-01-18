@@ -140,10 +140,14 @@
 
 .bankInfoCon {
     row-gap: 40px;
+    
 }
 
 
-.bankInfo {}
+.bankInfo {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
 
 
 
@@ -152,6 +156,7 @@
     font-size: .9rem;
     font-weight: 400;
     font-family: Poppins;
+    margin: 0px;
 
 }
 
@@ -161,10 +166,11 @@
 
 .bankInfo .accountBalance{
     color: rgb(81, 81, 81);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-family: Poppins;
     color:rgb(109, 156, 109);
     font-weight: 300;
+    margin: 0px;
 }
 
 
@@ -435,6 +441,10 @@ table td {
     font-weight: 600;
 }
 
+.cardContainer{
+    margin-bottom: 40px;
+}
+
 
 
 .metricsContainer{
@@ -451,8 +461,8 @@ table td {
     font-family: Poppins;
     text-align: center;
     margin-bottom: 20px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 30px;
+    padding-bottom: 30px;
     cursor: pointer;
 }
 

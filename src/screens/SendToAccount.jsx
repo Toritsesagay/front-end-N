@@ -19,6 +19,7 @@ function SendToAccont() {
     let [isConfirm, setIsConfirm] = useState(false)
     let [amount, setAmount] = useState('')
     let [accountNumber, setAccountNumber] = useState('')
+    let [accountType, setAccountType] = useState('')
     let [routeNumber, setRouteNumber] = useState('')
     let [message, setMessage] = useState('')
     let [accountName, setAccountName] = useState('')
@@ -36,8 +37,6 @@ function SendToAccont() {
     let [isOtp, setIsOtp] = useState(false)
 
     let [isMyBank, setIsMyBank] = useState(false)
-
-    let [currentAccount, setCurrentAccount] = useState(false)
     let [sourceAccountNumber, setSourceAccountNumber] = useState('')
     let [sourceAccount, setSourceAccount] = useState('')
     ///states for generating images
@@ -54,6 +53,13 @@ function SendToAccont() {
         fetchTransfers()
     }, [])
 
+    useEffect(() => {
+        if (accounts.length > 0) {
+            setSourceAccount(accounts[0])
+            setSourceAccountNumber(accounts[0].accountNumber)
+        }
+    }, [])
+
 
     let fetchTransfers = async () => {
         let res = await dispatch(fetchAllAccount())
@@ -63,8 +69,19 @@ function SendToAccont() {
             setIsLoading(false)
             return
         }
-        setIsLoading(false)
+
+      
         //filtering trnsfer
+        if(res.message.length > 0){
+            const newData = res.message.filter(item => {
+                return item.accountNumber !== sourceAccountNumber
+            })
+            setIsAccount(newData)
+            setIsLoading(false)
+            return
+        }
+
+        
         setIsAccount(res.message)
         setIsLoading(false)
 
@@ -81,27 +98,8 @@ function SendToAccont() {
             setRouteNumber(val)
 
         } else if (name === 'accountNumber') {
-     
-            setAccountNumber(val)
-            if (isMyBank) {
-                const newData = isAccount.filter((item) => {
-                    const itemData = item.accountNumber ? item.accountNumber : '';
-                    const textData = val;
-                    return itemData.indexOf(textData) > -1;
-                })
 
-                if (!newData) {
-                    setCurrentAccount()
-                    setAccountName(``)
-                    setRouteNumber()
-                    return
-                }
-                let foundAccount = newData[0]
-                setCurrentAccount(foundAccount?.accountNumber)
-                setAccountName(`${foundAccount?.user?.firstName} ${foundAccount?.user?.lastName}`)
-                setRouteNumber(foundAccount?.user?.swiftNumber)
-                setNameOfCountry(foundAccount?.user?.country)
-            }
+            setAccountNumber(val)
 
         }
         else if (name === 'amount') {
@@ -219,9 +217,7 @@ function SendToAccont() {
     }
 
 
-    let changeHandler = () => {
-        setIsShow(prev => !prev)
-    }
+
 
     let closeModal = () => {
         setIsError(prev => !prev)
@@ -278,14 +274,29 @@ function SendToAccont() {
 
     }
 
-
-    useEffect(() => {
-        if (accounts.length > 0) {
-            setSourceAccount(accounts[0])
-            setSourceAccountNumber(accounts[0].accountNumber)
+    let selectRecipientAccountHandler = (e) => {
+        setAccountNumber(e.target.value)
+        const newData = isAccount.find(item => {
+            return item.accountNumber === e.target.value
+        })
+        if (!newData) {
+            setAccountName(``)
+            setRouteNumber('')
+            setNameOfCountry('')
+            setAccountType('')
+            return
         }
+        let foundAccount = newData
+        setAccountName(`${foundAccount?.user?.firstName} ${foundAccount?.user?.lastName}`)
+        setRouteNumber(foundAccount?.user?.swiftNumber)
+        setNameOfCountry(foundAccount?.user?.country)
+        setAccountType(foundAccount?.accountType)
 
-    }, [])
+
+    }
+
+
+
 
 
     let myBankHandler = () => {
@@ -371,29 +382,46 @@ function SendToAccont() {
 
                                 <input value={sourceAccount.accountNumber} readOnly />
 
-                                <h6 > Transfer information </h6>
+                                {isMyBank && <div>
+                                    <h6 > Select Recipient Account </h6>
 
-                                <input placeholder='Account Number' onChange={(e) => onChangeHandler('accountNumber', e.target.value)} value={accountNumber} required />
+                                    <select value={accountNumber} onChange={selectRecipientAccountHandler}>
+                                        {isAccount.map(data => <option>{data.accountNumber}</option>)}
+                                    </select>
 
-
-                                {!isMyBank && <input placeholder='Enter Name Of Bank' onChange={(e) => onChangeHandler('nameOfBank', e.target.value)} value={nameOfBank} required />}
-
-                                {<input placeholder='Account Holder Name' onChange={(e) => onChangeHandler('nameOfAccount', e.target.value)} value={accountName} required />}
-
-                                <input placeholder='Enter Name Of Country' onChange={(e) => onChangeHandler('nameOfCountry', e.target.value)} value={nameOfCountry} required />
+                                    <input placeholder='Account Holder Name' onChange={(e) => onChangeHandler('nameOfAccount', e.target.value)} value={accountName} required />
 
 
+                                    <input placeholder='Account Type' onChange={(e) => onChangeHandler('accountType', e.target.value)} value={accountType} required />
+
+                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
 
 
-                                <input placeholder='Route/Swift Number' onChange={(e) => onChangeHandler('routeNumber', e.target.value)} value={routeNumber} required />
-
-                                <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
-
-                               
+                                    <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />
+                                </div>}
 
 
+                                {!isMyBank && <div>
+                                    <h6 > Transfer information </h6>
 
-                                <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />
+                                    <input placeholder='Account Number' onChange={(e) => onChangeHandler('accountNumber', e.target.value)} value={accountNumber} required />
+
+
+                                    <input placeholder='Enter Name Of Bank' onChange={(e) => onChangeHandler('nameOfBank', e.target.value)} value={nameOfBank} required />
+
+                                    <input placeholder='Account Holder Name' onChange={(e) => onChangeHandler('nameOfAccount', e.target.value)} value={accountName} required />
+
+                                    <input placeholder='Enter Name Of Country' onChange={(e) => onChangeHandler('nameOfCountry', e.target.value)} value={nameOfCountry} required />
+
+
+                                    <input placeholder='Route/Swift Number' onChange={(e) => onChangeHandler('routeNumber', e.target.value)} value={routeNumber} required />
+
+                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
+
+
+                                    <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />
+
+                                </div>}
 
                                 <div className={styles.addToFavorite}>
                                     <input type='checkbox' value={addToFavorite} onChange={favoriteListHandler} />

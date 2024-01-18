@@ -192,6 +192,7 @@ function Dashboard() {
                         {isAccount.map(data => <div className={styles.chartSection}>
 
                             <div className={styles.bankInfoCon}>
+
                                 <div className={styles.bankInfo} style={{ display: 'flex' }}>
                                     <p className={styles.accountType}>{data.accountType}.........</p>
                                     <p className={styles.accountType}>{data.accountNumber}</p>
@@ -222,14 +223,6 @@ function Dashboard() {
                                 className={styles.card}
                             />
                         </div>
-
-
-                        <div className={styles.buttonCon} >
-                            <button className={styles.button} onClick={newCardHandler}>New Card</button>
-                        </div>
-
-
-
 
                         <div className={styles.metricsContainer}>
                             <div className={styles.metrics} onClick={() => menuHandler('transaction-history')}>
@@ -277,8 +270,6 @@ function Dashboard() {
                                 <p><span>Country:</span> {user.country}</p>
 
                                 <p><span>Account status:</span> {user.accountVerified === false ? 'inactive' : 'active'}</p>
-
-
                             </div>
 
                         </div>
