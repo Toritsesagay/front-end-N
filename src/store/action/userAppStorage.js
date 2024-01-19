@@ -41,7 +41,7 @@ let retrievedAdminStoredToken = () => {
   }
 }
 
-//https://back-end-n.onrender.com
+//https://back-end-n.onrenderll.com
 
 
 
@@ -50,7 +50,7 @@ export const signup = (data) => {
   let objData = data
   return async (dispatch, getState) => {
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/signup`, {
+      const response = await fetch(`http://localhost:8080/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -129,7 +129,7 @@ export const login = (data) => {
     let userData = data
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch('https://back-end-n.onrender.com/login', {
+      const response = await fetch('http://localhost:8080/login', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -257,7 +257,7 @@ export const login = (data) => {
 export const verifiedEmail = (data) => {
   return async (dispatch, getState) => {
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/emailverify`, {
+      const response = await fetch(`http://localhost:8080/emailverify`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -314,14 +314,14 @@ export const verifiedEmail = (data) => {
 }
 */
 
-//https://back-end-n.onrender.com.com
+//http://localhost:8080.com
 
 //this one is the email verification page after signin up
 export const checkverification = (email) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/checkverification/${email}`, {
+      const response = await fetch(`http://localhost:8080/checkverification/${email}`, {
         headers: {
           "Content-Type": "application/json",
         }
@@ -387,7 +387,7 @@ export const verifying = (token) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/verifying/${token}`, {
+      const response = await fetch(`http://localhost:8080/verifying/${token}`, {
         headers: {
           "Content-Type": "application/json",
         }
@@ -448,7 +448,7 @@ export const sendRecoverEmail = (data) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/recoverpassword`, {
+      const response = await fetch(`http://localhost:8080/recoverpassword`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -502,7 +502,7 @@ export const checkRecoverTokenValidity = (token) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/checkrecovertokenvalidity/${token}`, {
+      const response = await fetch(`http://localhost:8080/checkrecovertokenvalidity/${token}`, {
         headers: {
           "Content-Type": "application/json",
         }
@@ -543,7 +543,7 @@ export const changePassword = (data) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
-      const response = await fetch(`https://back-end-n.onrender.com/changepassword/${data.token}`, {
+      const response = await fetch(`http://localhost:8080/changepassword/${data.token}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -592,7 +592,7 @@ export const phoneSignup = (data) => {
       } = getState().userAuth
 
 
-      const response = await fetch(`https://back-end-n.onrender.com/phonesignup/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/phonesignup/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -647,7 +647,7 @@ export const verifyPhone = (data) => {
 
       console.log(userToken)
 
-      const response = await fetch(`https://back-end-n.onrender.com/verifyphone/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/verifyphone/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -701,7 +701,7 @@ export const registeration = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/registeration/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/registeration/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -756,7 +756,7 @@ export const profilePhoto = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/pofilephoto/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/pofilephoto/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -815,7 +815,7 @@ export const hasCardFun = () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/hascard/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/hascard/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -870,7 +870,7 @@ export const createCard = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/createcard/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/createcard/${userToken}`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -926,7 +926,7 @@ export const deleteCard = (id) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/deletecard/${userToken}/${id}`, {
+      const response = await fetch(`http://localhost:8080/deletecard/${userToken}/${id}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -978,7 +978,7 @@ export const fetchDeposits = () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/withdraws/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/withdraws/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1026,7 +1026,7 @@ export const createDeposits = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/deposits/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/deposits/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1076,7 +1076,7 @@ export const withdraws = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/withdraw/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/withdraw/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1147,7 +1147,7 @@ export const fetchWithdraw = () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/withdraws/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/withdraws/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1194,7 +1194,7 @@ export const fetchAccounts = () => {
       let {
         userToken
       } = getState().userAuth
-      const response = await fetch(`https://back-end-n.onrender.com/accounts/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/accounts/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1246,7 +1246,7 @@ export const submitTaxCode = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/tax/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/tax/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1298,7 +1298,7 @@ export const submitBsaCode = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/bsa/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/bsa/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1350,7 +1350,7 @@ export const submitTacCode = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/tac/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/tac/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1402,7 +1402,7 @@ export const submitNrcCode = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/nrc/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/nrc/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1455,7 +1455,7 @@ export const submitImfCode = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/imf/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/imf/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1514,7 +1514,7 @@ export const submitCotCode = (data) => {
       data.payment = paymentData
       
 
-      const response = await fetch(`https://back-end-n.onrender.com/cot/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/cot/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1576,7 +1576,7 @@ export const sendAccount = (data) => {
 
       dispatch({type:DATA,payload:{...data,url:'sendAccount'}})
 
-      const response = await fetch(`https://back-end-n.onrender.com/sendAccount/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/sendAccount/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1685,7 +1685,7 @@ export const sendAccountWithinBank = (data) => {
       dispatch({type:DATA,payload:{...data,url:'sendAccountWithinBank'}})
 
 
-      const response = await fetch(`https://back-end-n.onrender.com/sendAccountWithinBank/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/sendAccountWithinBank/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1792,7 +1792,7 @@ export const fetchTransfersAccount = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/transferstoaccount/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/transferstoaccount/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1839,7 +1839,7 @@ export const fetchAllAccount = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/allaccounts/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/allaccounts/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1886,7 +1886,7 @@ export const sendOtpCode= () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/otpcode/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/otpcode/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -1933,7 +1933,7 @@ export const submitOtpCode= (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/otpcode/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/otpcode/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -1983,7 +1983,7 @@ export const fetchAllBenefeciaries = () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/beneficiaries/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/beneficiaries/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -2029,7 +2029,7 @@ export const addBeneficiaries = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/beneficiaries/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/beneficiaries/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
@@ -2080,7 +2080,7 @@ export const deleteBeneficiaries = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/beneficiaries/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/beneficiaries/${userToken}`, {
         method:'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -2128,7 +2128,7 @@ export const fetchAllNotifications = () => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/notifications/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/notifications/${userToken}`, {
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
@@ -2174,7 +2174,7 @@ export const deleteNotification = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/notifications/${userToken}/${data._id}`, {
+      const response = await fetch(`http://localhost:8080/notifications/${userToken}/${data._id}`, {
         method:'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -2224,7 +2224,7 @@ export const applyLoan = (data) => {
         userToken
       } = getState().userAuth
 
-      const response = await fetch(`https://back-end-n.onrender.com/loan/${userToken}`, {
+      const response = await fetch(`http://localhost:8080/loan/${userToken}`, {
         method:'POST',
         headers: {
           "Content-Type": "application/json",
