@@ -11,6 +11,7 @@ import { fetchAllAccount, sendAccount, sendAccountWithinBank } from '../store/ac
 import Loader from '../components/Modal/LoadingModal';
 import Modal from '../components/Modal/Modal';
 import OtpModal from '../components/Modal/OtpModal';
+import ModeModal from '../components/Modal/TransferModal';
 
 
 
@@ -35,6 +36,7 @@ function SendToAccont() {
     let [isShow, setIsShow] = useState(true)
     let [isSuccessData, setIsSuccessData] = useState({})
     let [isOtp, setIsOtp] = useState(false)
+    let [isMode, setIsMode] = useState(false)
 
     let [isMyBank, setIsMyBank] = useState(false)
     let [sourceAccountNumber, setSourceAccountNumber] = useState('')
@@ -57,6 +59,7 @@ function SendToAccont() {
         if (accounts.length > 0) {
             setSourceAccount(accounts[0])
             setSourceAccountNumber(accounts[0].accountNumber)
+
         }
     }, [])
 
@@ -78,12 +81,15 @@ function SendToAccont() {
             })
             setIsAccount(newData)
             setIsLoading(false)
+            setIsMode(true)
             return
         }
 
         
         setIsAccount(res.message)
         setIsLoading(false)
+        setIsMode(true)
+       
 
     }
 
@@ -116,9 +122,6 @@ function SendToAccont() {
         }
 
     }
-
-
-
 
     let submitHandler = (e) => {
         e.preventDefault()
@@ -310,8 +313,20 @@ function SendToAccont() {
     }
 
 
+    let closeModeModal = (data) =>{
+        if(data === 'myBank'){
+            setIsMode(false)
+            return setIsMyBank(true)
+        }
+        setIsMode(false)
+        setIsMyBank(false)
+    }
+
+
+
 
     return (<>
+    {isMode && <ModeModal closeFavorite={closeModeModal}/>}
         {isOtp ? <OtpModal closeModal={closeOtpModal} errorHandler={otpErrorHandler} /> : ""}
         {isFavorite ? <FavoriteModal action={action} closeFavorite={closeFavorite} errorHandler={favoriteErrorHandler} /> : ''}
         {isLoading && <Loader />}
@@ -340,17 +355,16 @@ function SendToAccont() {
 
                     <div className={styles.mainscreenright}>
 
-                        <div className={styles.buttonHeading}>
+                        {/*<div className={styles.buttonHeading}>
                             <button onClick={myBankHandler} style={{ backgroundColor: isMyBank ? 'orange' : ' rgb(246, 237, 224)', color: isMyBank ? '#fff' : 'orange' }}>
                                 My Bank
-
                             </button>
 
                             <button onClick={otherBankHandler} style={{ backgroundColor: isMyBank ? ' rgb(241, 255, 241)' : 'rgb(109, 156, 109)', color: isMyBank ? 'rgb(109, 156, 109)' : '#fff' }}>
                                 Other Bank
                             </button>
 
-                        </div>
+                        </div>*/}
 
 
 
