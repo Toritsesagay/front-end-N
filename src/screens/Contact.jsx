@@ -1,39 +1,77 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Home.module.css'
-
+import styles from './Home.module.css';
+import { useDispatch } from 'react-redux';
+import { fetchAdmin, sendContactEmail } from '../store/action/userAppStorage';
+import Loader from '../components/Modal/LoadingModal';
+import Modal from '../components/Modal/Modal';
 
 
 const ContactPage = () => {
     let [isLoading, setIsLoading] = useState(true)
-    let [isShow,setIsShow] =  useState(false)
-    let load = () => {
-        setIsLoading(false)
+    let dispatch = useDispatch()
+    let [isShow, setIsShow] = useState(false)
+    let [isAdminData, setIsAdminData] = useState({})
+    let [isData, setIsData] = useState({})
+    let [isMessageLoader, setIsMessageLoading] = useState(false)
+    let [isError, setIsError] = useState(false)
+    let [isErrorInfo, setIsErrorInfo] = useState(false)
+
+    let handleChangeHandler = (e, nameField) => {
+        let val = e.target.value
+        setIsData(prev => {
+            prev[`${nameField}`] = val
+            let newData = { ...prev }
+            return newData
+        })
     }
 
 
+    let load = async () => {
+        //fetch admin details
+        let res = await dispatch(fetchAdmin())
+        if (!res.bool) {
+            return setIsLoading(false)
+        }
+        setIsAdminData(res.message)
+        setIsLoading(false)
+    }
 
     useEffect(() => {
         setTimeout(() => {
             load()
         }, 5000)
-
     }, [load])
 
 
-    let togglemenu = ()=>{
-        setIsShow(prev=>!prev)
-        
+
+    let togglemenu = () => {
+        setIsShow(prev => !prev)
     }
 
-   
+
+    let submitHandler = async(e) => {
+        e.preventDefault()
+        setIsMessageLoading(true)
+        let res = await dispatch(sendContactEmail(isData))
+        setIsMessageLoading(false)
+        setIsError(true)
+        setIsErrorInfo(res.message)
+        return
+    }
+
+    let closeModal = ()=>{
+        setIsError(false)
+        setIsErrorInfo('')
+    }
+
+
 
 
     return (<>
+        {isMessageLoader && <Loader />}
+        {isError && <Modal content={isErrorInfo} closeModal={closeModal} />}
 
-       
-
-
-{isLoading ? <div className="preloader">
+        {isLoading ? <div className="preloader">
             <div className="loader">
                 <div className="shadow"></div>
                 <div className="box"></div>
@@ -102,19 +140,19 @@ const ContactPage = () => {
             </div>
 
             <div className={styles.togglebtn} onClick={togglemenu}>
-            <i class="fas fa-bars"></i>
+                <i class="fas fa-bars"></i>
             </div>
 
 
-            <div className={isShow?`${styles.show}`:`${styles.menu_1}`}>
+            <div className={isShow ? `${styles.show}` : `${styles.menu_1}`}>
                 <ul className={styles.listcontainer}>
                     <li className={styles.listitem}><a href="/" >HOME</a></li>
 
                     <li className={styles.listitemexpand}><a href="/savings" >SAVINGS ACCOUNT</a>
-                        
+
                     </li>
                     <li className={styles.listitemexpand}><a href="/current" >CURRENT ACCOUNT </a>
-                        
+
                     </li>
 
                     <li className={styles.listitem}><a href="/about" >ABOUT US</a></li>
@@ -124,13 +162,13 @@ const ContactPage = () => {
                     <li className={styles.listitem}><a href="/cards" >CARDS</a></li>
 
 
-                    
+
 
                     <li className={styles.listitem}><a href="/contact" >CONTACT</a></li>
                     <li className={styles.listitemlast}><a href="/login" >LOGIN</a><a href="/signup" >SIGNUP</a></li>
                 </ul>
 
-                
+
             </div>
         </div>
 
@@ -160,7 +198,7 @@ const ContactPage = () => {
                                     <div class="icon">
                                         <i class="fas fa-map-marker-alt"></i>
                                     </div>
-                                    <span>Address</span> CA 560 Bush St & 20th Ave, Apt 5 San Francisco, 230909, Canada
+                                    <span>Address</span> {isAdminData.location}
                                 </li>
 
                                 <li>
@@ -177,8 +215,8 @@ const ContactPage = () => {
                                         <i class="fas fa-phone-volume"></i>
                                     </div>
                                     <span>Phone</span>
-                                    <a href="tel:+44587154756">+44 587 154756</a>
-                                    <a href="tel:+55555514574">+55 5555 14574</a>
+                                    <a href="tel:+44587154756">{isAdminData.phone}</a>
+                                    <a href="tel:+55555514574">{isAdminData.phone}</a>
                                 </li>
                             </ul>
                         </div>
@@ -186,39 +224,45 @@ const ContactPage = () => {
 
                     <div class="col-lg-7 col-md-12">
                         <div class="contact-form">
-                            <form id="contactForm">
+                            <form id="contactForm" onSubmit={submitHandler}>
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
+
                                         <div class="form-group">
-                                            <input type="text" name="name" id="name" class="form-control" required data-error="Please enter your name" placeholder="Name" />
+                                            <input type="text" name="name" id="name" class="form-control" required data-error="Please enter your name" placeholder="Name" onChange={(e) => handleChangeHandler(e, 'name')} />
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6">
+
+                                        <div class="form-group">
+                                            <input type="email" name="email" id="email" class="form-control" required data-error="Please enter your email" placeholder="Email" onChange={(e) => handleChangeHandler(e, 'email')} />
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6">
+
+                                        <div class="form-group">
+                                            <input type="text" name="phone_number" id="phone_number" required data-error="Please enter your number" class="form-control" placeholder="Phone" onChange={(e) => handleChangeHandler(e, 'phone')} />
                                             <div class="help-block with-errors"></div>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-md-6">
                                         <div class="form-group">
-                                            <input type="email" name="email" id="email" class="form-control" required data-error="Please enter your email" placeholder="Email" />
-                                            <div class="help-block with-errors"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="phone_number" id="phone_number" required data-error="Please enter your number" class="form-control" placeholder="Phone" />
-                                            <div class="help-block with-errors"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="form-group">
-                                            <input type="text" name="msg_subject" id="msg_subject" class="form-control" required data-error="Please enter your subject" placeholder="Subject" />
+                                            <input type="text" name="msg_subject" id="msg_subject" class="form-control" required data-error="Please enter your subject" placeholder="Subject" onChange={(e) => handleChangeHandler(e, 'msg_subject')} />
                                             <div class="help-block with-errors"></div>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-12 col-md-12">
                                         <div class="form-group">
-                                            <textarea name="message" class="form-control" id="message" cols="30" rows="6" required data-error="Write your message" placeholder="Your Message"></textarea>
+                                            <textarea name="message" class="form-control" id="message" cols="30" rows="6" required data-error="Write your message" placeholder="Your Message" onChange={(e) => handleChangeHandler(e, 'message')} ></textarea>
                                             <div class="help-block with-errors"></div>
                                         </div>
                                     </div>
@@ -247,7 +291,7 @@ const ContactPage = () => {
                         <div className="single-footer-widget">
                             <div className="logo">
                                 <a href="/" className="black-logo"><img src="front/img/favicon.png" alt="logo" /></a>
-                                
+
                                 <p>Our response by the end of 2020 included a $20 million premium pay program for our employees.</p>
                             </div>
 
@@ -291,9 +335,8 @@ const ContactPage = () => {
                             <h3>Address</h3>
 
                             <ul className="footer-contact-info">
-                                <li><span>Location:</span> 27 Division St, NY 10002, USA</li>
-                                <li><span>Phone:</span> <a href="tel:+321984754">+ (321) 984 754</a></li>
-                                <li><span>Fax:</span> <a href="tel:+12129876543">+1-212-9876543</a></li>
+                                <li><span>Location:</span>{isAdminData.location}</li>
+                                <li><span>Phone:</span> <a href="">{isAdminData.phone}</a></li>
                             </ul>
                         </div>
                     </div>

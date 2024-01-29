@@ -6,6 +6,8 @@ export const WITHDRAW = 'WITHDRAW'
 export const CARDS = 'CARDS'
 export const DATA = 'DATA'
 
+export const FETCH_ADMIN = 'FETCH_ADMIN '
+
 
 //pure functions to calculate the time remaining
 
@@ -843,7 +845,7 @@ export const hasCardFun = () => {
       if (response.status === 200) {
         let data = await response.json()
         //fetch cards to store
-        dispatch({type:CARDS,payload:data.response})
+        dispatch({ type: CARDS, payload: data.response })
 
         return {
           bool: true,
@@ -984,7 +986,7 @@ export const fetchDeposits = () => {
         }
       })
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1026,15 +1028,15 @@ export const createDeposits = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/deposits/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1076,20 +1078,20 @@ export const withdraws = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/withdraw/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:"withdraw"
+          url: "withdraw"
         }
       }
 
@@ -1098,7 +1100,7 @@ export const withdraws = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:"withdraw"
+          url: "withdraw"
         }
       }
       if (response.status === 301) {
@@ -1106,7 +1108,7 @@ export const withdraws = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:"tax"
+          url: "tax"
         }
       }
       if (response.status === 302) {
@@ -1114,19 +1116,19 @@ export const withdraws = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:"bsa"
+          url: "bsa"
         }
       }
 
       if (response.status === 200) {
         let data = await response.json()
         //dispatch new history and account
-        dispatch({type:WITHDRAW,payload:data.response.allAccount})
+        dispatch({ type: WITHDRAW, payload: data.response.allAccount })
 
         return {
           bool: true,
           message: data.response.savedHistory,
-          url:'withdraw'
+          url: 'withdraw'
         }
       }
     } catch (err) {
@@ -1153,7 +1155,7 @@ export const fetchWithdraw = () => {
         }
       })
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1200,7 +1202,7 @@ export const fetchAccounts = () => {
         }
       })
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1220,7 +1222,7 @@ export const fetchAccounts = () => {
 
         //dispatch a new user
         //FETCH_ACCOUNTS
-        dispatch({type:FETCH_ACCOUNTS,payload:data.response})
+        dispatch({ type: FETCH_ACCOUNTS, payload: data.response })
 
         return {
           bool: true,
@@ -1242,44 +1244,109 @@ export const submitTaxCode = (data) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
       let {
-        userToken
+        userToken,
+        paymentData
       } = getState().userAuth
 
+      data.payment = paymentData
+
       const response = await fetch(`https://back-end-n.onrender.com/tax/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'tax'
+          url: 'tax'
         }
       }
-
       if (response.status === 300) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'tax'
+          url: 'tax'
         }
       }
+
+      if (response.status === 302) {
+        let data = await response.json()
+
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'bsa'
+        }
+      }
+
+      if (response.status === 303) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tac'
+        }
+      }
+      if (response.status === 305) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'nrc'
+        }
+      }
+
+      if (response.status === 306) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'imf'
+        }
+      }
+
+      if (response.status === 307) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'cot'
+        }
+      }
+
+
       if (response.status === 200) {
         let data = await response.json()
-        //dispatch a new user
         dispatch({ type: MODIFY_USER, payload: data.response })
+        //dispatch a new user
         return {
           bool: true,
-          message: data.response,
-          url:'bsa'
+          url: 'transfer'
         }
       }
+
     } catch (err) {
       return {
         bool: false,
@@ -1294,23 +1361,25 @@ export const submitBsaCode = (data) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
       let {
-        userToken
+        userToken,
+        paymentData
       } = getState().userAuth
+      data.payment = paymentData
 
       const response = await fetch(`https://back-end-n.onrender.com/bsa/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'bsa'
+          url: 'bsa'
         }
       }
 
@@ -1319,17 +1388,79 @@ export const submitBsaCode = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'bsa'
+          url: 'bsa'
         }
       }
+
+     
+      if (response.status === 301) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tax'
+        }
+      }
+
+     
+      if (response.status === 303) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tac'
+        }
+      }
+      if (response.status === 305) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'nrc'
+        }
+      }
+
+      if (response.status === 306) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'imf'
+        }
+      }
+
+      if (response.status === 307) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'cot'
+        }
+      }
+
+
       if (response.status === 200) {
         let data = await response.json()
         dispatch({ type: MODIFY_USER, payload: data.response })
         //dispatch a new user
         return {
           bool: true,
-          message: data.response,
-          url:'tac'
+          //message: data.response,
+          url: 'transfer'
         }
       }
     } catch (err) {
@@ -1340,166 +1471,7 @@ export const submitBsaCode = (data) => {
     }
   }
 }
-
 export const submitTacCode = (data) => {
-  return async (dispatch, getState) => {
-    //do some check on the server if its actually login before proceding to dispatch
-    try {
-      let {
-        userToken
-      } = getState().userAuth
-
-      const response = await fetch(`https://back-end-n.onrender.com/tac/${userToken}`, {
-        method:'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "header": `${userToken}`
-        },
-        body:JSON.stringify(data)
-      })
-      if  (response.status === 404) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'tac'
-        }
-      }
-
-      if (response.status === 300) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'tac'
-        }
-      }
-      if (response.status === 200) {
-        let data = await response.json()
-        dispatch({ type: MODIFY_USER, payload: data.response })
-        //dispatch a new user
-        return {
-          bool: true,
-          message: data.response,
-          url:'nrc'
-        }
-      }
-    } catch (err) {
-      return {
-        bool: false,
-        message: "network error"
-      }
-    }
-  }
-}
-
-export const submitNrcCode = (data) => {
-  return async (dispatch, getState) => {
-    //do some check on the server if its actually login before proceding to dispatch
-    try {
-      let {
-        userToken
-      } = getState().userAuth
-
-      const response = await fetch(`https://back-end-n.onrender.com/nrc/${userToken}`, {
-        method:'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "header": `${userToken}`
-        },
-        body:JSON.stringify(data)
-      })
-      if  (response.status === 404) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'nrc'
-        }
-      }
-
-      if (response.status === 300) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'nrc'
-        }
-      }
-      if (response.status === 200) {
-        let data = await response.json()
-        dispatch({ type: MODIFY_USER, payload: data.response })
-        //dispatch a new user
-        return {
-          bool: true,
-          message: data.response,
-          url:'imf'
-        }
-      }
-    } catch (err) {
-      return {
-        bool: false,
-        message: "network error"
-      }
-    }
-  }
-}
-
-
-export const submitImfCode = (data) => {
-  return async (dispatch, getState) => {
-    //do some check on the server if its actually login before proceding to dispatch
-    try {
-      let {
-        userToken
-      } = getState().userAuth
-
-      const response = await fetch(`https://back-end-n.onrender.com/imf/${userToken}`, {
-        method:'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "header": `${userToken}`
-        },
-        body:JSON.stringify(data)
-      })
-      if  (response.status === 404) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'imf'
-        }
-      }
-
-      if (response.status === 300) {
-        let data = await response.json()
-        return {
-          bool: false,
-          message: data.response,
-          url:'imf'
-        }
-      }
-      if (response.status === 200) {
-        let data = await response.json()
-        dispatch({ type: MODIFY_USER, payload: data.response })
-        //dispatch a new user
-        return {
-          bool: true,
-          message: data.response,
-          url:'cot'
-        }
-      }
-    } catch (err) {
-      return {
-        bool: false,
-        message: "network error"
-      }
-    }
-  }
-}
-//https://back-end-n.onrenderll.com
-
-export const submitCotCode = (data) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
@@ -1507,26 +1479,22 @@ export const submitCotCode = (data) => {
         userToken,
         paymentData
       } = getState().userAuth
-
-      //fetch payment data from store
-
       data.payment = paymentData
-      
 
-      const response = await fetch(`https://back-end-n.onrender.com/cot/${userToken}`, {
-        method:'POST',
+      const response = await fetch(`https://back-end-n.onrender.com/tac/${userToken}`, {
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'cot'
+          url: 'tac'
         }
       }
 
@@ -1535,17 +1503,79 @@ export const submitCotCode = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'cot'
+          url: 'tac'
         }
       }
+    
+     
+      if (response.status === 301) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tax'
+        }
+      }
+
+      if (response.status === 302) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'bsa'
+        }
+      }
+
+      if (response.status === 305) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'nrc'
+        }
+      }
+
+      if (response.status === 306) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'imf'
+        }
+      }
+
+      if (response.status === 307) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'cot'
+        }
+      }
+
       if (response.status === 200) {
         let data = await response.json()
         dispatch({ type: MODIFY_USER, payload: data.response })
         //dispatch a new user
         return {
           bool: true,
-          message: data.response,
-          url:'dashboard'
+          //message: data.response,
+          url: 'transfer'
         }
       }
     } catch (err) {
@@ -1556,13 +1586,364 @@ export const submitCotCode = (data) => {
     }
   }
 }
+export const submitNrcCode = (data) => {
+  return async (dispatch, getState) => {
+    //do some check on the server if its actually login before proceding to dispatch
+    try {
+      let {
+        userToken,
+        paymentData
+      } = getState().userAuth
+      data.payment = paymentData
+
+      const response = await fetch(`https://back-end-n.onrender.com/nrc/${userToken}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "header": `${userToken}`
+        },
+        body: JSON.stringify(data)
+      })
+      if (response.status === 404) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+          url: 'nrc'
+        }
+      }
+
+      if (response.status === 300) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+          url: 'nrc'
+        }
+      }
+      
+     
+      if (response.status === 301) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tax'
+        }
+      }
+
+      if (response.status === 302) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'bsa'
+        }
+      }
+
+      if (response.status === 303) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tac'
+        }
+      }
+  
+      if (response.status === 306) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'imf'
+        }
+      }
+
+      if (response.status === 307) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'cot'
+        }
+      }
+
+      if (response.status === 200) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+        //dispatch a new user
+        return {
+          bool: true,
+          //message: data.response,
+          url: 'transfer'
+        }
+      }
+
+    } catch (err) {
+      return {
+        bool: false,
+        message: "network error"
+      }
+    }
+  }
+}
+export const submitImfCode = (data) => {
+  return async (dispatch, getState) => {
+    //do some check on the server if its actually login before proceding to dispatch
+    try {
+      let {
+        userToken,
+        paymentData
+      } = getState().userAuth
+      data.payment = paymentData
+
+      const response = await fetch(`https://back-end-n.onrender.com/imf/${userToken}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "header": `${userToken}`
+        },
+        body: JSON.stringify(data)
+      })
+      if (response.status === 404) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+          url: 'imf'
+        }
+      }
+
+      if (response.status === 300) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+          url: 'imf'
+        }
+      }
+
+     
+      if (response.status === 301) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tax'
+        }
+      }
+
+      if (response.status === 302) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'bsa'
+        }
+      }
+
+      if (response.status === 303) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tac'
+        }
+      }
+      if (response.status === 305) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'nrc'
+        }
+      }
+
+     
+
+      if (response.status === 307) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'cot'
+        }
+      }
+
+      if (response.status === 200) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+        //dispatch a new user
+        return {
+          bool: true,
+          //message: data.response,
+          url: 'transfer'
+        }
+      }
+     
+    } catch (err) {
+      return {
+        bool: false,
+        message: "network error"
+      }
+    }
+  }
+}
+
+//https://back-end-n.onrenderll.com
+export const submitCotCode = (data) => {
+  return async (dispatch, getState) => {
+    //do some check on the server if its actually login before proceding to dispatch
+    try {
+
+      let {
+        userToken,
+        paymentData
+      } = getState().userAuth
+
+      data.payment = paymentData
+
+      const response = await fetch(`https://back-end-n.onrender.com/cot/${userToken}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "header": `${userToken}`
+        },
+        body: JSON.stringify(data)
+      })
 
 
 
+      if (response.status === 404) {
+        let data = await response.json()
 
 
+        return {
+          bool: false,
+          message: data.response,
+          url: 'cot'
+        
+        }
+      }
+
+      if (response.status === 300) {
+        let data = await response.json()
 
 
+        return {
+          bool: false,
+          message: data.response,
+          url: 'cot'
+        }
+      }
+     
+      if (response.status === 301) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tax'
+        }
+      }
+
+      if (response.status === 302) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'bsa'
+        }
+      }
+
+      if (response.status === 303) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'tac'
+        }
+      }
+      if (response.status === 305) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'nrc'
+        }
+      }
+
+      if (response.status === 306) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+
+
+        return {
+          bool: false,
+          message: data.response.message,
+          url: 'imf'
+        }
+      }
+
+
+      if (response.status === 200) {
+        let data = await response.json()
+        dispatch({ type: MODIFY_USER, payload: data.response })
+        //dispatch a new user
+        return {
+          bool: true,
+          //message: data.response,
+          url: 'transfer'
+        }
+      }
+    } catch (err) {
+      return {
+        bool: false,
+        message: "network error"
+      }
+    }
+  }
+}
 
 
 export const sendAccount = (data) => {
@@ -1573,22 +1954,22 @@ export const sendAccount = (data) => {
         userToken
       } = getState().userAuth
 
-      dispatch({type:DATA,payload:{...data,url:'sendAccount'}})
+      dispatch({ type: DATA, payload: { ...data, url: 'sendAccount' } })
 
       const response = await fetch(`https://back-end-n.onrender.com/sendAccount/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:''
+          url: ''
         }
       }
 
@@ -1597,15 +1978,16 @@ export const sendAccount = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:''
+          url: ''
         }
       }
+
       if (response.status === 301) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'tax'
+          url: 'tax'
         }
       }
       if (response.status === 302) {
@@ -1613,25 +1995,23 @@ export const sendAccount = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'bsa'
+          url: 'bsa'
         }
       }
-
       if (response.status === 303) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'tac'
+          url: 'tac'
         }
       }
-
       if (response.status === 305) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'nrc'
+          url: 'nrc'
         }
       }
       if (response.status === 306) {
@@ -1639,7 +2019,7 @@ export const sendAccount = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'imf'
+          url: 'imf'
         }
       }
       if (response.status === 307) {
@@ -1647,7 +2027,7 @@ export const sendAccount = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'cot'
+          url: 'cot'
         }
       }
 
@@ -1655,12 +2035,12 @@ export const sendAccount = (data) => {
 
       if (response.status === 200) {
         let data = await response.json()
-        dispatch({type:WITHDRAW,payload:data.response.allAccount})
+        dispatch({ type: WITHDRAW, payload: data.response.allAccount })
         //dispatch a new user
         return {
           bool: true,
           message: data.response.transfer,
-          url:''
+          url: ''
         }
       }
     } catch (err) {
@@ -1681,27 +2061,27 @@ export const sendAccountWithinBank = (data) => {
         userToken
       } = getState().userAuth
 
-      dispatch({type:DATA,payload:{...data,url:'sendAccountWithinBank'}})
+      dispatch({ type: DATA, payload: { ...data, url: 'sendAccountWithinBank' } })
 
 
       const response = await fetch(`https://back-end-n.onrender.com/sendAccountWithinBank/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
 
 
 
 
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:''
+          url: ''
         }
       }
 
@@ -1710,7 +2090,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:''
+          url: ''
         }
       }
       if (response.status === 301) {
@@ -1718,7 +2098,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'tax'
+          url: 'tax'
         }
       }
 
@@ -1727,7 +2107,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'bsa'
+          url: 'bsa'
         }
       }
       if (response.status === 303) {
@@ -1735,7 +2115,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'tac'
+          url: 'tac'
         }
       }
 
@@ -1744,7 +2124,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'nrc'
+          url: 'nrc'
         }
       }
       if (response.status === 306) {
@@ -1752,7 +2132,7 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'imf'
+          url: 'imf'
         }
       }
       if (response.status === 307) {
@@ -1760,17 +2140,17 @@ export const sendAccountWithinBank = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'cot'
+          url: 'cot'
         }
       }
       if (response.status === 200) {
         let data = await response.json()
-        dispatch({type:WITHDRAW,payload:data.response.allAccount})
+        dispatch({ type: WITHDRAW, payload: data.response.allAccount })
         //dispatch a new user
         return {
           bool: true,
           message: data.response.transfer,
-          url:''
+          url: ''
         }
       }
     } catch (err) {
@@ -1797,7 +2177,7 @@ export const fetchTransfersAccount = (data) => {
           "header": `${userToken}`
         },
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1814,7 +2194,7 @@ export const fetchTransfersAccount = (data) => {
       }
       if (response.status === 200) {
         let data = await response.json()
-        
+
         return {
           bool: true,
           message: data.response,
@@ -1844,7 +2224,7 @@ export const fetchAllAccount = (data) => {
           "header": `${userToken}`
         },
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1861,7 +2241,7 @@ export const fetchAllAccount = (data) => {
       }
       if (response.status === 200) {
         let data = await response.json()
-        
+
         return {
           bool: true,
           message: data.response,
@@ -1877,7 +2257,7 @@ export const fetchAllAccount = (data) => {
 }
 
 //send otp code to the user
-export const sendOtpCode= () => {
+export const sendOtpCode = () => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
@@ -1891,7 +2271,7 @@ export const sendOtpCode= () => {
           "header": `${userToken}`
         }
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1924,7 +2304,7 @@ export const sendOtpCode= () => {
 }
 
 //submit otp code to server
-export const submitOtpCode= (data) => {
+export const submitOtpCode = (data) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
     try {
@@ -1933,14 +2313,14 @@ export const submitOtpCode= (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/otpcode/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -1988,7 +2368,7 @@ export const fetchAllBenefeciaries = () => {
           "header": `${userToken}`
         }
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -2029,19 +2409,19 @@ export const addBeneficiaries = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/beneficiaries/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
           message: data.response,
-          url:'add-beneficiaries'
+          url: 'add-beneficiaries'
         }
       }
 
@@ -2050,7 +2430,7 @@ export const addBeneficiaries = (data) => {
         return {
           bool: false,
           message: data.response,
-          url:'add-beneficiaries'
+          url: 'add-beneficiaries'
         }
       }
       if (response.status === 200) {
@@ -2059,7 +2439,7 @@ export const addBeneficiaries = (data) => {
         return {
           bool: true,
           message: data.response,
-          url:'beneficiaries'
+          url: 'beneficiaries'
         }
       }
     } catch (err) {
@@ -2080,14 +2460,14 @@ export const deleteBeneficiaries = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/beneficiaries/${userToken}`, {
-        method:'DELETE',
+        method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify({id:data})
+        body: JSON.stringify({ id: data })
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -2133,7 +2513,7 @@ export const fetchAllNotifications = () => {
           "header": `${userToken}`
         }
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -2174,13 +2554,13 @@ export const deleteNotification = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/notifications/${userToken}/${data._id}`, {
-        method:'DELETE',
+        method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         }
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -2214,7 +2594,6 @@ export const deleteNotification = (data) => {
   }
 }
 
-
 export const applyLoan = (data) => {
   return async (dispatch, getState) => {
     //do some check on the server if its actually login before proceding to dispatch
@@ -2224,14 +2603,14 @@ export const applyLoan = (data) => {
       } = getState().userAuth
 
       const response = await fetch(`https://back-end-n.onrender.com/loan/${userToken}`, {
-        method:'POST',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "header": `${userToken}`
         },
-        body:JSON.stringify(data)
+        body: JSON.stringify(data)
       })
-      if  (response.status === 404) {
+      if (response.status === 404) {
         let data = await response.json()
         return {
           bool: false,
@@ -2262,6 +2641,115 @@ export const applyLoan = (data) => {
     }
   }
 }
+
+
+
+
+export const fetchAdmin = () => {
+  return async (dispatch, getState) => {
+    //do some check on the server if its actually login before proceding to dispatch
+    try {
+      let {
+        userToken
+      } = getState().userAuth
+
+      const response = await fetch(`https://back-end-n.onrender.com/admin`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "header": `${userToken}`
+        }
+      })
+      if (response.status === 404) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+        }
+      }
+
+      if (response.status === 300) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+        }
+      }
+      if (response.status === 200) {
+        let data = await response.json()
+        //dispatch a admin to store
+        dispatch({ type: FETCH_ADMIN, payload: data.response })
+
+        return {
+          bool: true,
+          message: data.response,
+        }
+      }
+    } catch (err) {
+      return {
+        bool: false,
+        message: "network error"
+      }
+    }
+  }
+}
+
+
+//method to send email from contact message
+export const sendContactEmail = (data) => {
+  return async (dispatch, getState) => {
+    //do some check on the server if its actually login before proceding to dispatch
+    try {
+      let {
+        userToken
+      } = getState().userAuth
+
+      const response = await fetch(`https://back-end-n.onrender.com/contact`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "header": `${userToken}`
+        },
+        body: JSON.stringify(data)
+      })
+      if (response.status === 404) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+        }
+      }
+
+      if (response.status === 300) {
+        let data = await response.json()
+        return {
+          bool: false,
+          message: data.response,
+        }
+      }
+      if (response.status === 200) {
+        let data = await response.json()
+    
+        return {
+          bool: true,
+          message: data.response
+        }
+      }
+    } catch (err) {
+      return {
+        bool: false,
+        message: "network error"
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-import { SIGNUP_USER, LOGIN_USER, MODIFY_USER, FETCH_ACCOUNTS, WITHDRAW, CARDS, DATA } from "../action/userAppStorage";
+import { SIGNUP_USER, LOGIN_USER, MODIFY_USER, FETCH_ACCOUNTS, WITHDRAW, CARDS, DATA, FETCH_ADMIN } from "../action/userAppStorage";
 
 
 
@@ -23,8 +23,9 @@ const initialState = {
     accounts: [],
     cards: [],
     paymentData: null,
-    loans:[],
-    histories:[]
+    loans: [],
+    histories: [],
+    admin: null
 }
 
 
@@ -37,24 +38,20 @@ export const userAuthReducer = (state = initialState, action) => {
                 user: action.payload.user,
                 userToken: action.payload.userToken,
                 accounts: action.payload.accounts,
-                cards:action.payload.cards,
-                loans:action.payload.loans,
-                histories:action.payload.histories
+                cards: action.payload.cards,
+                loans: action.payload.loans,
+                histories: action.payload.histories
             }
-
         case DATA:
             return {
                 ...state,
-                paymentData:action.payload
+                paymentData: action.payload
             }
-
         case MODIFY_USER:
             return {
                 ...state,
                 user: action.payload.user,
             }
-
-
         case FETCH_ACCOUNTS:
             return {
                 ...state,
@@ -72,6 +69,14 @@ export const userAuthReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cards: action.payload,
+            }
+
+
+
+        case FETCH_ADMIN:
+            return {
+                ...state,
+                admin: action.payload,
             }
 
 

@@ -10,12 +10,8 @@ let TransferModal = ({ closeFavorite }) => {
             
             <div className={styles.body}>
                 
-                <h4>
-                    Transfer funds within
-                </h4>
-
-                <button onClick={()=>closeFavorite('myBank')} className={styles.transferbutton}>my bank</button>
-                <button onClick={()=>closeFavorite('otherBank')} className={styles.transferbutton}>other bank</button>
+                <button onClick={()=>closeFavorite('myBank')} className={styles.transferbutton}>Transfer within my accounts</button>
+                <button onClick={()=>closeFavorite('otherBank')} className={styles.transferbutton}>Transfer to other bank</button>
 
 
 

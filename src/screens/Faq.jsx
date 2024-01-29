@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Home.module.css'
+import styles from './Home.module.css';
+import { useDispatch } from 'react-redux';
+import { fetchAdmin } from '../store/action/userAppStorage';
+
 
 
 const FaqPage = () => {
     let [isLoading, setIsLoading] = useState(true)
-    let [isShow,setIsShow] =  useState(false)
-    let load = () => {
+    let dispatch = useDispatch()
+    let [isShow, setIsShow] = useState(false)
+    let [isAdminData, setIsAdminData] = useState({})
+
+    let load = async() => {
+        //fetch admin details
+        let res = await dispatch(fetchAdmin())
+        if(!res.bool){
+            return setIsLoading(false)
+        }
+        setIsAdminData(res.message)
         setIsLoading(false)
     }
-
-
 
     useEffect(() => {
         setTimeout(() => {
             load()
         }, 5000)
-
     }, [load])
 
 
@@ -243,7 +252,7 @@ const FaqPage = () => {
                         <div className="single-footer-widget">
                             <div className="logo">
                                 <a href="/" className="black-logo"><img src="front/img/favicon.png" alt="logo" /></a>
-                                
+
                                 <p>Our response by the end of 2020 included a $20 million premium pay program for our employees.</p>
                             </div>
 
@@ -287,9 +296,8 @@ const FaqPage = () => {
                             <h3>Address</h3>
 
                             <ul className="footer-contact-info">
-                                <li><span>Location:</span> 27 Division St, NY 10002, USA</li>
-                                <li><span>Phone:</span> <a href="tel:+321984754">+ (321) 984 754</a></li>
-                                <li><span>Fax:</span> <a href="tel:+12129876543">+1-212-9876543</a></li>
+                                <li><span>Location:</span>{isAdminData.location}</li>
+                                <li><span>Phone:</span> <a href="">{isAdminData.phone}</a></li>
                             </ul>
                         </div>
                     </div>

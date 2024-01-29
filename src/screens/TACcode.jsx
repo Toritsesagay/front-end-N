@@ -1,12 +1,13 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import styles from './CardForm.module.css';
-import { useDispatch} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
 import Loader from '../components/Modal/LoadingModal';
 import Modal from '../components/Modal/Modal';
-import { submitTacCode} from '../store/action/userAppStorage';
+import { submitTacCode } from '../store/action/userAppStorage';
 import { useNavigate } from 'react-router-dom';
+import SuccessModal from '../components/Modal/SuccessModal';
 
 
 function TACCode() {
@@ -14,9 +15,12 @@ function TACCode() {
     let [isError, setIsError] = useState(false)
     let [isErrorInfo, setIsErrorInfo] = useState('')
     let [tacCode, setIsTacCode] = useState('')
-    let [isBody,setIsBody] = useState(false)
-    let [isUrl,setIsUrl] = useState('  ')
+    let [isBody, setIsBody] = useState(true)
+    let [isUrl, setIsUrl] = useState('  ')
+
     let navigate = useNavigate()
+    let [isSuccessModal, setIsSuccessModal] = useState(false)
+    let { paymentData } = useSelector(state => state.userAuth)
 
     let dispatch = useDispatch()
     let onChangeHandler = (name, val) => {
@@ -26,7 +30,7 @@ function TACCode() {
     }
 
 
-    let submitHandler = async(e) => {
+    let submitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true)
 
@@ -38,12 +42,13 @@ function TACCode() {
             setIsLoading(false)
             setIsError(true)
             setIsErrorInfo(response.message)
+            setIsUrl(response.url)
             return
         }
         setIsLoading(false)
-        navigate(`/${response.url}`)
+        setIsSuccessModal(true)
+        setIsUrl(response.url)
     }
-
 
 
     let changeHandler = () => {
@@ -51,14 +56,32 @@ function TACCode() {
     }
 
 
+   
     let closeModal = () => {
         setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
     }
 
-   
+    
+    let closeSuccessModal = () => {
+        setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
+        return
+    }
+
+
 
 
     return (<>
+        {isSuccessModal ? <SuccessModal data={paymentData} closeFavorite={closeSuccessModal} /> : ''}
+
+
         {isLoading && <Loader />}
         {isError && <Modal content={isErrorInfo} closeModal={closeModal} />}
         <div className={styles.screenContainer}>
@@ -80,8 +103,8 @@ function TACCode() {
                             </div>
 
                             {<div className={styles.body}>
-                                {isBody?<p>
-                                    Enter code to continue! If you do not have this contact customer care support!</p>:''}
+                                {isBody ? <p>
+                                    Enter code to continue! If you do not have this contact customer care support!</p> : ''}
                             </div>}
 
                         </div>

@@ -37,12 +37,10 @@ function SendToAccont() {
     let [isSuccessData, setIsSuccessData] = useState({})
     let [isOtp, setIsOtp] = useState(false)
     let [isMode, setIsMode] = useState(false)
-
     let [isMyBank, setIsMyBank] = useState(false)
     let [sourceAccountNumber, setSourceAccountNumber] = useState('')
     let [sourceAccount, setSourceAccount] = useState('')
     ///states for generating images
-
 
 
     //initialising reduzx
@@ -59,7 +57,6 @@ function SendToAccont() {
         if (accounts.length > 0) {
             setSourceAccount(accounts[0])
             setSourceAccountNumber(accounts[0].accountNumber)
-
         }
     }, [])
 
@@ -73,9 +70,8 @@ function SendToAccont() {
             return
         }
 
-      
         //filtering trnsfer
-        if(res.message.length > 0){
+        if (res.message.length > 0) {
             const newData = res.message.filter(item => {
                 return item.accountNumber !== sourceAccountNumber
             })
@@ -85,12 +81,10 @@ function SendToAccont() {
             return
         }
 
-        
+
         setIsAccount(res.message)
         setIsLoading(false)
-        setIsMode(true)
-       
-
+        //setIsMode(true)
     }
 
     let onChangeHandler = (name, val) => {
@@ -299,9 +293,6 @@ function SendToAccont() {
     }
 
 
-
-
-
     let myBankHandler = () => {
         setIsMyBank(true)
 
@@ -313,8 +304,8 @@ function SendToAccont() {
     }
 
 
-    let closeModeModal = (data) =>{
-        if(data === 'myBank'){
+    let closeModeModal = (data) => {
+        if (data === 'myBank') {
             setIsMode(false)
             return setIsMyBank(true)
         }
@@ -326,12 +317,14 @@ function SendToAccont() {
 
 
     return (<>
-    {isMode && <ModeModal closeFavorite={closeModeModal}/>}
+        {isMode && <ModeModal closeFavorite={closeModeModal} />}
         {isOtp ? <OtpModal closeModal={closeOtpModal} errorHandler={otpErrorHandler} /> : ""}
         {isFavorite ? <FavoriteModal action={action} closeFavorite={closeFavorite} errorHandler={favoriteErrorHandler} /> : ''}
         {isLoading && <Loader />}
         {isError && <Modal closeModal={closeModal} content={isErrorInfo} />}
+
         {isSuccessModal ? <SuccessModal data={isSuccessData} closeFavorite={closeSuccessModal} /> : ''}
+
 
         {isConfirm ? <ConfirmTransferModal cancelPayment={cancelPayment} resubmitHandler={resubmitHandler} modify={onChangeHandler} data={{
             amount,
@@ -342,6 +335,8 @@ function SendToAccont() {
             nameOfCountry,
             accountNumber
         }} /> : ''}
+
+
 
 
 
@@ -408,7 +403,7 @@ function SendToAccont() {
 
                                     <input placeholder='Account Type' onChange={(e) => onChangeHandler('accountType', e.target.value)} value={accountType} required />
 
-                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
+                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required type='number' />
 
 
                                     <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />
@@ -430,7 +425,7 @@ function SendToAccont() {
 
                                     <input placeholder='Route/Swift Number' onChange={(e) => onChangeHandler('routeNumber', e.target.value)} value={routeNumber} required />
 
-                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required />
+                                    <input placeholder='Amount' onChange={(e) => onChangeHandler('amount', e.target.value)} value={amount} required type='number'/>
 
 
                                     <input placeholder='Your Message' onChange={(e) => onChangeHandler('message', e.target.value)} value={message} required />

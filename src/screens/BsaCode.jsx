@@ -1,12 +1,13 @@
 import React, { useState} from 'react';
 import styles from './CardForm.module.css';
-import { useDispatch} from "react-redux";
+import { useDispatch,useSelector} from "react-redux";
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
 import Loader from '../components/Modal/LoadingModal';
 import Modal from '../components/Modal/Modal';
 import { submitBsaCode} from '../store/action/userAppStorage';
 import { useNavigate } from 'react-router-dom';
+import SuccessModal from '../components/Modal/SuccessModal';
 
 function BsaCode() {
     let [isLoading, setIsLoading] = useState(false)
@@ -14,9 +15,11 @@ function BsaCode() {
     let [isErrorInfo, setIsErrorInfo] = useState('')
     let [bsaCode, setIsBsaCode] = useState('')
     let [isBody,setIsBody] = useState(true)
+    let [isUrl, setIsUrl] = useState('  ')
     let dispatch = useDispatch()
     let navigate = useNavigate()
-
+    let [isSuccessModal, setIsSuccessModal] = useState(false)
+    let { paymentData } = useSelector(state => state.userAuth)
 
 
     let onChangeHandler = (name, val) => {
@@ -32,17 +35,16 @@ function BsaCode() {
         let response = await dispatch(submitBsaCode({
             bsaCode
         }))
-
-
-
         if (!response.bool) {
             setIsLoading(false)
             setIsError(true)
             setIsErrorInfo(response.message)
+            setIsUrl(response.url)
             return
         }
         setIsLoading(false)
-        navigate(`/${response.url}`)
+        setIsSuccessModal(true)
+        setIsUrl(response.url)
     }
 
 
@@ -54,14 +56,32 @@ function BsaCode() {
 
     let closeModal = () => {
         setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
+    }
+
+    
+    let closeSuccessModal = () => {
+        setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
+        return
     }
 
    
 
 
     return (<>
-        {isLoading && <Loader />}
+         {isLoading && <Loader />}
         {isError && <Modal content={isErrorInfo} closeModal={closeModal} />}
+
+        {isSuccessModal ?<SuccessModal data={paymentData} closeFavorite={closeSuccessModal} /> : ''}
+
+
         <div className={styles.screenContainer}>
             <SideBar />
             <div className={styles.maindashboard} style={{ height: '100vh' }} >

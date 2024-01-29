@@ -5,7 +5,7 @@ import App from './App';
 //configuring react router
 import { BrowserRouter } from 'react-router-dom'
 //configuring redux store
-import {thunk} from "redux-thunk"
+import { thunk } from "redux-thunk"
 import { combineReducers, createStore, applyMiddleware } from "redux";
 
 import { Provider } from "react-redux"
@@ -30,7 +30,14 @@ root.render(
     <Provider store={store}>
         <App />
 
-    </Provider>
+</Provider>
+    {/*<div className='loader'>
+      <div className='loader-inner'>
+        <div className='loader-inner-inner'>
+          <span className='material-icons'>check</span>
+        </div>
+      </div>
+</div>*/}
 
   </BrowserRouter>
 );

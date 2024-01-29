@@ -111,7 +111,6 @@ function Dashboard() {
     }
 
     let day = () => {
-
         var now = new Date(),
             hour = now.getHours();
 

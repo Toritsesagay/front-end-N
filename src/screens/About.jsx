@@ -1,36 +1,52 @@
-import React,{useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Home.module.css'
+import { useDispatch } from 'react-redux';
+import { fetchAdmin } from '../store/action/userAppStorage';
+
 
 
 const AboutPage = () => {
     let [isLoading, setIsLoading] = useState(true)
-    let [isShow,setIsShow] =  useState(false)
-    let load = () => {
+    let [isShow, setIsShow] = useState(false)
+    let dispatch = useDispatch()
+    let [isAdminData, setIsAdminData] = useState({})
+
+
+
+    let load = async () => {
+        //fetch admin details
+        let res = await dispatch(fetchAdmin())
+        if (!res.bool) {
+            return setIsLoading(false)
+        }
+        setIsAdminData(res.message)
         setIsLoading(false)
     }
 
-
-
-
-    useEffect(()=>{
-        setTimeout(()=>{
+    useEffect(() => {
+        setTimeout(() => {
             load()
-        },5000)
-        
-    },[load])
+        }, 5000)
+    }, [load])
 
 
-    let togglemenu = ()=>{
-        setIsShow(prev=>!prev)
-        
-    }
+
 
   
 
+    let togglemenu = () => {
+        setIsShow(prev => !prev)
+    }
+
+
+
     return (<>
-
-        
-
+    {isLoading ? <div className="preloader">
+            <div className="loader">
+                <div className="shadow"></div>
+                <div className="box"></div>
+            </div>
+        </div> : ""}
 
 
         <div className="navbar-area">
@@ -89,19 +105,19 @@ const AboutPage = () => {
             </div>
 
             <div className={styles.togglebtn} onClick={togglemenu}>
-            <i class="fas fa-bars"></i>
+                <i class="fas fa-bars"></i>
             </div>
 
 
-            <div className={isShow?`${styles.show}`:`${styles.menu_1}`}>
+            <div className={isShow ? `${styles.show}` : `${styles.menu_1}`}>
                 <ul className={styles.listcontainer}>
                     <li className={styles.listitem}><a href="/" >HOME</a></li>
 
                     <li className={styles.listitemexpand}><a href="/savings" >SAVINGS ACCOUNT</a>
-                        
+
                     </li>
                     <li className={styles.listitemexpand}><a href="/current" >CURRENT ACCOUNT </a>
-                        
+
                     </li>
 
                     <li className={styles.listitem}><a href="/about" >ABOUT US</a></li>
@@ -111,13 +127,13 @@ const AboutPage = () => {
                     <li className={styles.listitem}><a href="/cards" >CARDS</a></li>
 
 
-                    
+
 
                     <li className={styles.listitem}><a href="/contact" >CONTACT</a></li>
                     <li className={styles.listitemlast}><a href="/login" >LOGIN</a><a href="/signup" >SIGNUP</a></li>
                 </ul>
 
-                
+
             </div>
         </div>
 
@@ -163,7 +179,7 @@ const AboutPage = () => {
                         <div className="single-footer-widget">
                             <div className="logo">
                                 <a href="/" className="black-logo"><img src="front/img/favicon.png" alt="logo" /></a>
-                                
+
                                 <p>Our response by the end of 2020 included a $20 million premium pay program for our employees.</p>
                             </div>
 
@@ -207,9 +223,9 @@ const AboutPage = () => {
                             <h3>Address</h3>
 
                             <ul className="footer-contact-info">
-                                <li><span>Location:</span> 27 Division St, NY 10002, USA</li>
-                                <li><span>Phone:</span> <a href="tel:+321984754">+ (321) 984 754</a></li>
-                                <li><span>Fax:</span> <a href="tel:+12129876543">+1-212-9876543</a></li>
+                                <li><span>Location:</span> {isAdminData.location}</li>
+                                <li><span>Phone:</span> <a href="">{isAdminData.phone}</a></li>
+                                
                             </ul>
                         </div>
                     </div>
