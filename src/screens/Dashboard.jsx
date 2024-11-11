@@ -354,7 +354,7 @@ function Dashboard() {
                                             </td>
                                             <td style={{ color: colorFun(data.transactionType) }}>
 
-                                                $-{Intl.NumberFormat().format(data.amount)}.00
+                                                ${Intl.NumberFormat().format(data.amount)}.00
                                             </td>
 
                                         </tr>)}
